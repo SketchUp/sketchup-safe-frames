@@ -102,7 +102,10 @@ module Sketchup::Extensions::SafeFrameTools
   def self.reset_camera_aspect_ratio
     view = Sketchup.active_model.active_view
     self.set_aspect_ratio(view, 0.0, FIX_CAMERA_ZOOM)
-    #self.width_changed( @tWidth.value )
+    if @window
+      self.width_changed(@window[:txt_width].value)
+      @window[:txt_aspect_ratio].value = Locale.float_to_string(0.0)
+    end
   end
 
 
@@ -139,10 +142,11 @@ module Sketchup::Extensions::SafeFrameTools
     eAspectChange = DeferredEvent.new { |value| self.aspect_changed(value) }
     aspect_ratio = Locale.float_to_string(camera.aspect_ratio)
     txtAspectRatio = SKUI::Textbox.new(aspect_ratio)
+    txtAspectRatio.name = :txt_aspect_ratio
     txtAspectRatio.position(95, 20)
     txtAspectRatio.width = 30
     txtAspectRatio.on(:textchange) { |control|
-      eAspectChange.call( control.value )
+      eAspectChange.call(control.value)
     }
     gAspect.add_control(txtAspectRatio)
     
@@ -152,8 +156,6 @@ module Sketchup::Extensions::SafeFrameTools
     
     btnResetAspect = SKUI::Button.new('Reset') { |control|
       self.reset_camera_aspect_ratio
-      #textbox = @window.get_control_by_ui_id( txtAspectRatio.ui_id )
-      #textbox.value = Locale.float_to_string( 0.0 )
     }
     btnResetAspect.position(-10, 19)
     btnResetAspect.size(75, 23)
@@ -169,58 +171,57 @@ module Sketchup::Extensions::SafeFrameTools
     # Width
     #width = @settings[ :export_width ]
     width = 800
-    #eWidthChange = DeferredEvent.new { |value| self.width_changed( value ) }
+    eWidthChange = DeferredEvent.new { |value| self.width_changed(value) }
     txtWidth = SKUI::Textbox.new(width)
+    txtWidth.name = :txt_width
     txtWidth.position(55, 20)
     txtWidth.width = 40
-    txtWidth.add_event_handler(:textchange) { |control|
-      #eWidthChange.call( control.value )
+    txtWidth.on(:textchange) { |control|
+      eWidthChange.call(control.value)
     }
-    gExport.add_control( txtWidth )
-    @tWidth = txtWidth
+    gExport.add_control(txtWidth)
     
     lblWidth = SKUI::Label.new('Width:', txtWidth)
     lblWidth.position(10, 23)
-    gExport.add_control( lblWidth )
+    gExport.add_control(lblWidth)
     
     # Height
-    if view.camera.aspect_ratio == 0.0
+    if self.float_equal(view.camera.aspect_ratio, 0.0)
       ratio = view.vpheight.to_f / view.vpwidth
       height = ( view.vpwidth * ratio ).to_i
     else
       ratio = 1.0 / view.camera.aspect_ratio
       height = ( width * ratio ).to_i
     end
-    eHeightChange = DeferredEvent.new { |value| self.height_changed( value ) }
+    eHeightChange = DeferredEvent.new { |value| self.height_changed(value) }
     txtHeight = SKUI::Textbox.new(height)
-    txtHeight.top = 20
-    txtHeight.left = 160
+    txtHeight.name = :txt_height
+    txtHeight.position(160, 20)
     txtHeight.width = 40
     txtHeight.on(:textchange) { |control|
-      #eHeightChange.call( control.value )
+      eHeightChange.call(control.value)
     }
-    gExport.add_control( txtHeight )
-    @tHeight = txtHeight
+    gExport.add_control(txtHeight)
     
     lblHeight = SKUI::Label.new('Height:', txtHeight)
     lblHeight.position(110, 23)
-    gExport.add_control( lblHeight )
+    gExport.add_control(lblHeight)
     
     # Transparency
     chkTransp = SKUI::Checkbox.new('Transparency')
+    chkTransp.name = :chk_transparency
     chkTransp.position(10, 55)
     #chkTransp.checked = @settings[:export_transparency]
     chkTransp.checked = true
     gExport.add_control(chkTransp)
-    @cTransp = chkTransp
     
     # Anti-aliasing
     chkAA = SKUI::Checkbox.new('Anti-aliasing')
+    chkAA.name = :chk_aa
     chkAA.position(10, 80)
     #chkAA.checked = @settings[ :export_antialias ]
     chkAA.checked = false
     gExport.add_control(chkAA)
-    @cAA = chkAA
     
     # Export
     btnExport = SKUI::Button.new('Export') { |control|
@@ -232,9 +233,9 @@ module Sketchup::Extensions::SafeFrameTools
     
     # Close
     btnClose = SKUI::Button.new('Close') { |control|
-      #@settings[ :export_width ] = @tWidth.value.to_i
-      #@settings[ :export_transparency ] = @cTransp.checked?
-      #@settings[ :export_antialias ] = @cAA.checked?
+      #@settings[ :export_width ] = @window[:txt_width].value.to_i
+      #@settings[ :export_transparency ] = @window[:chk_transparency].checked?
+      #@settings[ :export_antialias ] = @window[:chk_aa].checked?
       control.window.close
     }
     btnClose.position(-7, -7)
@@ -252,7 +253,7 @@ module Sketchup::Extensions::SafeFrameTools
   class DeferredEvent
     
     # @since 1.0.0
-    def initialize( delay = 0.2, &block )
+    def initialize(delay = 0.2, &block)
       @proc = block
       @delay = delay
       @last_value = nil
@@ -260,14 +261,14 @@ module Sketchup::Extensions::SafeFrameTools
     end
     
     # @since 1.0.0
-    def call( value )
+    def call(value)
       return false if value == @last_value
-      UI.stop_timer( @timer ) if @timer
+      UI.stop_timer(@timer) if @timer
       done = false
-      @timer = UI.start_timer( @delay, false ) {
+      @timer = UI.start_timer(@delay, false) {
         unless done # Ensure it only runs once.
           done = true
-          @proc.call( value )
+          @proc.call(value)
         end
       }
       true
@@ -277,7 +278,7 @@ module Sketchup::Extensions::SafeFrameTools
   
   
   # @since 1.0.0
-  def self.width_changed( value )
+  def self.width_changed(value)
     puts "width_changed( #{value} )"
     view = Sketchup.active_model.active_view
     if view.camera.aspect_ratio == 0.0
@@ -285,12 +286,12 @@ module Sketchup::Extensions::SafeFrameTools
     else
       ratio = 1.0 / view.camera.aspect_ratio
     end
-    @tHeight.value = ( value.to_i * ratio ).to_i
+    @window[:txt_height].value = ( value.to_i * ratio ).to_i
   end
   
   
   # @since 1.0.0
-  def self.height_changed( value )
+  def self.height_changed(value)
     puts "height_changed( #{value} )"
     view = Sketchup.active_model.active_view
     if view.camera.aspect_ratio == 0.0
@@ -298,17 +299,21 @@ module Sketchup::Extensions::SafeFrameTools
     else
       ratio = view.camera.aspect_ratio
     end
-    @tWidth.value = ( value.to_i * ratio ).to_i
+    @window[:txt_width].value = ( value.to_i * ratio ).to_i
+    nil
   end
   
   
   # @since 1.0.0
-  def self.aspect_changed( value )
+  def self.aspect_changed(value)
     puts "aspect_changed( #{value} )"
     aspect_ratio = Locale.string_to_float(value)
     view = Sketchup.active_model.active_view
     self.set_aspect_ratio(view, aspect_ratio, FIX_CAMERA_ZOOM)
-    self.width_changed(@tWidth.value)
+    if @window
+      self.width_changed(@window[:txt_width].value)
+    end
+    nil
   end
 
 
@@ -400,10 +405,10 @@ module Sketchup::Extensions::SafeFrameTools
   
   # @since 1.0.0
   def self.export_safeframe
-    width = @tWidth.value.to_i
-    height = @tHeight.value.to_i
-    antialias = @cAA.checked
-    transparent = @cTransp.checked
+    width = @window[:txt_width].value.to_i
+    height = @window[:txt_height].value.to_i
+    antialias = @window[:chk_aa].checked
+    transparent = @window[:chk_transparency].checked
     self.export_viewport(width, height, antialias, transparent)
   end
 
