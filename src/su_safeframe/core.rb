@@ -17,6 +17,7 @@
 
 require 'su_safeframe.rb'
 require 'su_safeframe/locale.rb'
+require 'su_safeframe/settings.rb'
 
 module Sketchup::Extensions::SafeFrameTools
 
@@ -61,11 +62,17 @@ module Sketchup::Extensions::SafeFrameTools
 
   ### Extension ### ------------------------------------------------------------
 
-  # Bug in SketchUp will cause the camera to shift. If this constant is set to
-  # true the extension will try to adjust to that.
+  # SketchUp will cause the camera to shift when changing aspect ratio. If this
+  # constant is set to true the extension will try to adjust to that.
   #
   # @since 1.0.0
   FIX_CAMERA_ZOOM = true
+
+
+  @settings = Settings.new(PLUGIN_ID)
+  @settings.set_default(:export_width,        800)
+  @settings.set_default(:export_transparency, false)
+  @settings.set_default(:export_antialias,    false)
 
 
   # @since 1.0.0
@@ -124,10 +131,11 @@ module Sketchup::Extensions::SafeFrameTools
     camera = view.camera
 
     options = {
-      :title     => PLUGIN_NAME,
-      :width     => 250,
-      :height    => 240,
-      :resizable => false
+      :title           => PLUGIN_NAME,
+      :preferences_key => PLUGIN_ID,
+      :width           => 250,
+      :height          => 240,
+      :resizable       => false
     }
     @window = SKUI::Window.new(options)
     
@@ -169,8 +177,7 @@ module Sketchup::Extensions::SafeFrameTools
     @window.add_control(gExport)
     
     # Width
-    #width = @settings[ :export_width ]
-    width = 800
+    width = @settings[:export_width]
     eWidthChange = DeferredEvent.new { |value| self.width_changed(value) }
     txtWidth = SKUI::Textbox.new(width)
     txtWidth.name = :txt_width
@@ -188,7 +195,7 @@ module Sketchup::Extensions::SafeFrameTools
     # Height
     if self.float_equal(view.camera.aspect_ratio, 0.0)
       ratio = view.vpheight.to_f / view.vpwidth
-      height = ( view.vpwidth * ratio ).to_i
+      height = ( width * ratio ).to_i
     else
       ratio = 1.0 / view.camera.aspect_ratio
       height = ( width * ratio ).to_i
@@ -211,16 +218,14 @@ module Sketchup::Extensions::SafeFrameTools
     chkTransp = SKUI::Checkbox.new('Transparency')
     chkTransp.name = :chk_transparency
     chkTransp.position(10, 55)
-    #chkTransp.checked = @settings[:export_transparency]
-    chkTransp.checked = true
+    chkTransp.checked = @settings[:export_transparency]
     gExport.add_control(chkTransp)
     
     # Anti-aliasing
     chkAA = SKUI::Checkbox.new('Anti-aliasing')
     chkAA.name = :chk_aa
     chkAA.position(10, 80)
-    #chkAA.checked = @settings[ :export_antialias ]
-    chkAA.checked = false
+    chkAA.checked = @settings[:export_antialias]
     gExport.add_control(chkAA)
     
     # Export
@@ -233,9 +238,9 @@ module Sketchup::Extensions::SafeFrameTools
     
     # Close
     btnClose = SKUI::Button.new('Close') { |control|
-      #@settings[ :export_width ] = @window[:txt_width].value.to_i
-      #@settings[ :export_transparency ] = @window[:chk_transparency].checked?
-      #@settings[ :export_antialias ] = @window[:chk_aa].checked?
+      @settings[:export_width]        = @window[:txt_width].value.to_i
+      @settings[:export_transparency] = @window[:chk_transparency].checked?
+      @settings[:export_antialias]    = @window[:chk_aa].checked?
       control.window.close
     }
     btnClose.position(-7, -7)
@@ -407,8 +412,8 @@ module Sketchup::Extensions::SafeFrameTools
   def self.export_safeframe
     width = @window[:txt_width].value.to_i
     height = @window[:txt_height].value.to_i
-    antialias = @window[:chk_aa].checked
-    transparent = @window[:chk_transparency].checked
+    antialias = @window[:chk_aa].checked?
+    transparent = @window[:chk_transparency].checked?
     self.export_viewport(width, height, antialias, transparent)
   end
 
