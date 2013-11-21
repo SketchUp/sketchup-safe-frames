@@ -23,6 +23,15 @@ require 'su_safeframe/ui.rb'
 
 module Sketchup::Extensions::SafeFrameTools
 
+  # NOTE to Extension Warehouse moderation:
+  # This will load the bundled SKUI library into this module - keeping it
+  # isolated from everything else. It's dynamically embedding the library as
+  # oppose to hard-coding a wrapper which would be awkward to maintain.
+  # There is a stub methods left behind: ::SKUI.embed_in - but that is by design
+  # and harmless.
+  load File.join(PATH, 'SKUI', 'embed_skui.rb')
+  ::SKUI.embed_in(self)
+
 ### UI ### ---------------------------------------------------------------------
 
   unless file_loaded?(__FILE__)
