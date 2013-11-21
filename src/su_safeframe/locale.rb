@@ -38,7 +38,7 @@ module Sketchup::Extensions::SafeFrameTools::Locale
   # in the precision of the model units.
   #
 	# @param [Float] float
-	# @param [Integer] precision (Added: 2.7.0)
+	# @param [Integer] precision
 	#
 	# @return [String]
 	# @since 1.0.0

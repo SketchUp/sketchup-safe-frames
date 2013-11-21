@@ -19,7 +19,11 @@ require 'su_safeframe.rb'
 
 module Sketchup::Extensions::SafeFrameTools
 
+  # The precision floating point values are displayed at.
+  # @since 1.0.0
+  PRECISION = 2
 
+  # @since 1.0.0
   def self.create_camera_window
     puts 'self.create_camera_window'
     view = Sketchup.active_model.active_view
@@ -29,7 +33,7 @@ module Sketchup::Extensions::SafeFrameTools
       :title           => PLUGIN_NAME,
       :preferences_key => PLUGIN_ID,
       :width           => 250,
-      :height          => 240,
+      :height          => 290,
       :resizable       => false
     }
     @window = SKUI::Window.new(options)
@@ -38,16 +42,16 @@ module Sketchup::Extensions::SafeFrameTools
     gAspect = SKUI::Groupbox.new('Viewport')
     gAspect.position(5, 5)
     gAspect.right = 5
-    gAspect.height = 55
+    gAspect.height = 110
     @window.add_control(gAspect)
 
     # Aspect Ratio
     eAspectChange = DeferredEvent.new { |value| self.aspect_changed(value) }
-    aspect_ratio = Locale.float_to_string(camera.aspect_ratio)
+    aspect_ratio = Locale.float_to_string(camera.aspect_ratio, PRECISION)
     txtAspectRatio = SKUI::Textbox.new(aspect_ratio)
     txtAspectRatio.name = :txt_aspect_ratio
-    txtAspectRatio.position(95, 20)
-    txtAspectRatio.width = 30
+    txtAspectRatio.position(100, 20)
+    txtAspectRatio.width = 45
     txtAspectRatio.on(:textchange) { |control|
       eAspectChange.call(control.value)
     }
@@ -55,18 +59,59 @@ module Sketchup::Extensions::SafeFrameTools
     
     lblWidth = SKUI::Label.new('Aspect Ratio:', txtAspectRatio)
     lblWidth.position(10, 23)
+    lblWidth.width = 85
+    lblWidth.align = :right
     gAspect.add_control(lblWidth)
     
     btnResetAspect = SKUI::Button.new('Reset') { |control|
-      self.reset_camera_aspect_ratio
+      zero = Locale.float_to_string(0.0)
+      @window[:txt_aspect_ratio].value = zero
+      self.aspect_changed(zero)
     }
     btnResetAspect.position(-10, 19)
     btnResetAspect.size(75, 23)
     gAspect.add_control(btnResetAspect)
+
+    # Angle of View Info
+    x_aov, y_aov = self.get_camera_xy_aov(view)
+    x_aov = Locale.float_to_string(x_aov, PRECISION)
+    y_aov = Locale.float_to_string(y_aov, PRECISION)
+
+    eAovXChange = DeferredEvent.new { |value| self.aov_x_changed(value) }
+    txtAovX = SKUI::Textbox.new(x_aov)
+    txtAovX.name = :txt_aov_x
+    txtAovX.position(100, 50)
+    txtAovX.width = 45
+    txtAovX.on(:textchange) { |control|
+      eAovXChange.call(control.value)
+    }
+    gAspect.add_control(txtAovX)
+
+    lblAovX = SKUI::Label.new("AOV X°:", txtAovX)
+    lblAovX.position(10, 55)
+    lblAovX.width = 85
+    lblAovX.align = :right
+    gAspect.add_control(lblAovX)
+
+    eAovYChange = DeferredEvent.new { |value| self.aov_y_changed(value) }
+    txtAovY = SKUI::Textbox.new(y_aov)
+    txtAovY.name = :txt_aov_y
+    txtAovY.position(100, 75)
+    txtAovY.width = 45
+    txtAovY.on(:textchange) { |control|
+      eAovYChange.call(control.value)
+    }
+    gAspect.add_control(txtAovY)
+
+    lblAovY = SKUI::Label.new("AOV Y°:", txtAovY)
+    lblAovY.position(10, 80)
+    lblAovY.width = 85
+    lblAovY.align = :right
+    gAspect.add_control(lblAovY)
     
     # Export Viewport Group
     gExport = SKUI::Groupbox.new('Export 2D')
-    gExport.position(5, 65)
+    gExport.position(5, 120)
     gExport.right = 5
     gExport.height = 110
     @window.add_control(gExport)
@@ -108,6 +153,10 @@ module Sketchup::Extensions::SafeFrameTools
     lblHeight = SKUI::Label.new('Height:', txtHeight)
     lblHeight.position(110, 23)
     gExport.add_control(lblHeight)
+
+    lblUnits = SKUI::Label.new('px')
+    lblUnits.position(-10, 23)
+    gExport.add_control(lblUnits)
     
     # Transparency
     chkTransp = SKUI::Checkbox.new('Transparency')
@@ -156,6 +205,7 @@ module Sketchup::Extensions::SafeFrameTools
       ratio = 1.0 / view.camera.aspect_ratio
     end
     @window[:txt_height].value = ( value.to_i * ratio ).to_i
+    nil
   end
   
   
@@ -181,7 +231,51 @@ module Sketchup::Extensions::SafeFrameTools
     self.set_aspect_ratio(view, aspect_ratio, FIX_CAMERA_ZOOM)
     if @window
       self.width_changed(@window[:txt_width].value)
+      self.update_aov
     end
+    nil
+  end
+
+
+  # @since 1.0.0
+  def self.aov_x_changed(value)
+    puts "aov_x_changed( #{value} )"
+    view = Sketchup.active_model.active_view
+
+    aov_x = Locale.string_to_float(value)
+    self.set_aov_x(view, aov_x)
+
+    x_aov, y_aov = self.get_camera_xy_aov(view)
+    y_aov = Locale.float_to_string(y_aov, PRECISION)
+    @window[:txt_aov_y].value = y_aov
+    nil
+  end
+
+
+  # @since 1.0.0
+  def self.aov_y_changed(value)
+    puts "aov_y_changed( #{value} )"
+    view = Sketchup.active_model.active_view
+
+    aov_y = Locale.string_to_float(value)
+    self.set_aov_y(view, aov_y)
+
+    x_aov, y_aov = self.get_camera_xy_aov(view)
+    x_aov = Locale.float_to_string(x_aov, PRECISION)
+    @window[:txt_aov_x].value = x_aov
+    nil
+  end
+
+
+  # @since 1.0.0
+  def self.update_aov
+    puts "update_aov()"
+    view = Sketchup.active_model.active_view
+    x_aov, y_aov = self.get_camera_xy_aov(view)
+    x_aov = Locale.float_to_string(x_aov, PRECISION)
+    y_aov = Locale.float_to_string(y_aov, PRECISION)
+    @window[:txt_aov_x].value = x_aov
+    @window[:txt_aov_y].value = y_aov
     nil
   end
 

@@ -201,6 +201,47 @@ module Sketchup::Extensions::SafeFrameTools
   end
 
 
+  # @since 1.0.0
+  def self.get_camera_xy_aov(view)
+    view_aspect = view.vpwidth.to_f / view.vpheight.to_f
+    # Ideally the Ruby API should expose the flag that indicates if camera.fov
+    # is vertical or horizontal, but alas.
+    if float_equal(view.camera.aspect_ratio, 0.0)
+      y_aov = view.field_of_view
+      x_aov = y_aov_to_x_aov(y_aov, view_aspect)
+    else
+      x_aov = view.field_of_view
+      y_aov = x_aov_to_y_aov(x_aov, view.camera.aspect_ratio)
+    end
+    [x_aov, y_aov]
+  end
+
+
+  # @since 1.0.0
+  def self.set_aov_x(view, x_aov)
+    if float_equal(view.camera.aspect_ratio, 0.0)
+      view_aspect = view.vpwidth.to_f / view.vpheight.to_f
+      y_aov = x_aov_to_y_aov(x_aov, view_aspect)
+      view.camera.fov = y_aov
+    else
+      view.camera.fov = x_aov
+    end
+    nil
+  end
+
+
+  # @since 1.0.0
+  def self.set_aov_y(view, y_aov)
+    if float_equal(view.camera.aspect_ratio, 0.0)
+      view.camera.fov = y_aov
+    else
+      x_aov = y_aov_to_x_aov(y_aov, view.camera.aspect_ratio)
+      view.camera.fov = x_aov
+    end
+    nil
+  end
+
+
   # @see http://www.gamedev.net/topic/431111-perspective-math-calculating-horisontal-fov-from-vertical/
   #
   # @since 1.0.0
