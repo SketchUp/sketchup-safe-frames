@@ -25,7 +25,7 @@ module Sketchup::Extensions::SafeFrameTools
 
   # @since 1.0.0
   def self.create_camera_window
-    puts 'self.create_camera_window'
+    #puts 'self.create_camera_window'
     view = Sketchup.active_model.active_view
     camera = view.camera
 
@@ -197,7 +197,7 @@ module Sketchup::Extensions::SafeFrameTools
   
   # @since 1.0.0
   def self.width_changed(value)
-    puts "width_changed( #{value} )"
+    #puts "width_changed( #{value} )"
     view = Sketchup.active_model.active_view
     if view.camera.aspect_ratio == 0.0
       ratio = view.vpheight.to_f / view.vpwidth.to_f
@@ -211,7 +211,7 @@ module Sketchup::Extensions::SafeFrameTools
   
   # @since 1.0.0
   def self.height_changed(value)
-    puts "height_changed( #{value} )"
+    #puts "height_changed( #{value} )"
     view = Sketchup.active_model.active_view
     if view.camera.aspect_ratio == 0.0
       ratio = view.vpwidth.to_f / view.vpheight.to_f
@@ -225,7 +225,7 @@ module Sketchup::Extensions::SafeFrameTools
   
   # @since 1.0.0
   def self.aspect_changed(value)
-    puts "aspect_changed( #{value} )"
+    #puts "aspect_changed( #{value} )"
     aspect_ratio = Locale.string_to_float(value)
     view = Sketchup.active_model.active_view
     self.set_aspect_ratio(view, aspect_ratio, FIX_CAMERA_ZOOM)
@@ -239,7 +239,7 @@ module Sketchup::Extensions::SafeFrameTools
 
   # @since 1.0.0
   def self.aov_x_changed(value)
-    puts "aov_x_changed( #{value} )"
+    #puts "aov_x_changed( #{value} )"
     view = Sketchup.active_model.active_view
 
     aov_x = Locale.string_to_float(value)
@@ -254,7 +254,7 @@ module Sketchup::Extensions::SafeFrameTools
 
   # @since 1.0.0
   def self.aov_y_changed(value)
-    puts "aov_y_changed( #{value} )"
+    #puts "aov_y_changed( #{value} )"
     view = Sketchup.active_model.active_view
 
     aov_y = Locale.string_to_float(value)
@@ -269,7 +269,7 @@ module Sketchup::Extensions::SafeFrameTools
 
   # @since 1.0.0
   def self.update_aov
-    puts "update_aov()"
+    #puts "update_aov()"
     view = Sketchup.active_model.active_view
     x_aov, y_aov = self.get_camera_xy_aov(view)
     x_aov = Locale.float_to_string(x_aov, PRECISION)
