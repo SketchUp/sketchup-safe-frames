@@ -5,7 +5,7 @@
 # This software is provided as an example of using the Ruby interface
 # to SketchUp.
 #
-# Permission to use, copy, modify, and distribute this software for 
+# Permission to use, copy, modify, and distribute this software for
 # any purpose and without fee is hereby granted, provided that the above
 # copyright notice appear in all copies.
 #
@@ -36,7 +36,7 @@ module Sketchup::Extensions::SafeFrameTools
 
   unless file_loaded?(__FILE__)
     # Commands
-    cmd = UI::Command.new('Set Camera Aspect Ratio') { 
+    cmd = UI::Command.new('Set Camera Aspect Ratio') {
       self.open_camera_window
     }
     cmd.small_icon = File.join(PATH_ICONS, 'camera_aspect_16.png')
@@ -44,8 +44,8 @@ module Sketchup::Extensions::SafeFrameTools
     cmd.tooltip = 'Camera Tools'
     cmd.status_bar_text = 'Camera Tools'
     cmd_set_camera_aspect_ratio = cmd
-    
-    cmd = UI::Command.new('Reset Camera Aspect Ratio') { 
+
+    cmd = UI::Command.new('Reset Camera Aspect Ratio') {
       self.reset_camera_aspect_ratio
     }
     cmd.small_icon = File.join(PATH_ICONS, 'camera_reset_16.png')
@@ -53,7 +53,7 @@ module Sketchup::Extensions::SafeFrameTools
     cmd.tooltip = 'Resets the camera aspect ratio'
     cmd.status_bar_text = 'Resets the camera aspect ratio'
     cmd_reset_camera_aspect_ratio = cmd
-    
+
     # Menus
     menu = UI.menu('Plugins').add_submenu(PLUGIN_NAME)
     menu.add_item(cmd_set_camera_aspect_ratio)
@@ -63,7 +63,7 @@ module Sketchup::Extensions::SafeFrameTools
     toolbar = UI::Toolbar.new(PLUGIN_NAME)
     toolbar.add_item(cmd_set_camera_aspect_ratio)
     toolbar.add_item(cmd_reset_camera_aspect_ratio)
-    
+
     if toolbar.get_last_state == TB_VISIBLE
       toolbar.restore
       UI.start_timer(0.1, false) { toolbar.restore } # SU bug 2902434
@@ -107,7 +107,7 @@ module Sketchup::Extensions::SafeFrameTools
       filename = UI.savepanel('Export Camera Safeframe', nil, "#{filter}|")
     end
     return if filename.nil?
-    
+
     view = Sketchup.active_model.active_view
     options = {
       :filename    => filename,
@@ -118,7 +118,7 @@ module Sketchup::Extensions::SafeFrameTools
       :compression => 0.9
     }
     result = view.write_image(options)
-    
+
     if result
       UI.messagebox "Image saved to: #{filename}"
     else
@@ -151,8 +151,8 @@ module Sketchup::Extensions::SafeFrameTools
   def self.float_equal(float1, float2, tolerance = 1.0e-3)
     (float1 - float2).abs < tolerance
   end
-  
-  
+
+
   # @since 1.0.0
   def self.set_aspect_ratio(view, ratio, zoom_fix = true)
     # Mimmick what SketchUp does internally.
@@ -202,7 +202,7 @@ module Sketchup::Extensions::SafeFrameTools
     #  FOV(x) = ?
     #
     # camera.aspect_ratio > 0
-    # 
+    #
     # +----------+
     # |          |
     # |          | FOV(y) = ?
@@ -212,7 +212,7 @@ module Sketchup::Extensions::SafeFrameTools
     # The original FOV(y) should be preserved, so a new FOV(x) is calculated
     # that will restore the original FOV(y).
     view.camera.aspect_ratio = ratio
-      
+
     safe_frame_ratio = [ratio, view_xy_ratio].min
     new_y_aov = view.field_of_view                          # Target Y AOV.
     new_x_aov = y_aov_to_x_aov(new_y_aov, safe_frame_ratio) # Target X AOV.
@@ -273,8 +273,8 @@ module Sketchup::Extensions::SafeFrameTools
   def self.x_aov_to_y_aov(vaov, ratio)
     return (2.0 * Math.atan( Math.tan(vaov.degrees / 2.0) / ratio )).radians
   end
-  
-  
+
+
   # @since 1.0.0
   def self.export_safeframe
     width = @window[:txt_width].value.to_i
@@ -286,7 +286,7 @@ module Sketchup::Extensions::SafeFrameTools
 
 
   ### DEBUG ### ----------------------------------------------------------------
-  
+
   # Sketchup::Extensions::SafeFrameTools.reload
   #
   # @since 1.0.0
