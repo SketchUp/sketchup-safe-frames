@@ -5,7 +5,7 @@
 # This software is provided as an example of using the Ruby interface
 # to SketchUp.
 #
-# Permission to use, copy, modify, and distribute this software for 
+# Permission to use, copy, modify, and distribute this software for
 # any purpose and without fee is hereby granted, provided that the above
 # copyright notice appear in all copies.
 #
@@ -25,7 +25,7 @@ module Sketchup::Extensions::SafeFrameTools
   #
   # @since 1.0.0
   class DeferredEvent
-    
+
     # @since 1.0.0
     def initialize(delay = 0.2, &block)
       @proc = block
@@ -47,7 +47,7 @@ module Sketchup::Extensions::SafeFrameTools
       }
       true
     end
-    
+
   end # class DeferredEvent
 
 

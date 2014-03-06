@@ -5,7 +5,7 @@
 # This software is provided as an example of using the Ruby interface
 # to SketchUp.
 #
-# Permission to use, copy, modify, and distribute this software for 
+# Permission to use, copy, modify, and distribute this software for
 # any purpose and without fee is hereby granted, provided that the above
 # copyright notice appear in all copies.
 #
@@ -37,7 +37,7 @@ module Sketchup::Extensions::SafeFrameTools
       :resizable       => false
     }
     @window = SKUI::Window.new(options)
-    
+
     # Camera Aspect Ratio Group
     gAspect = SKUI::Groupbox.new('Viewport')
     gAspect.position(5, 5)
@@ -56,13 +56,13 @@ module Sketchup::Extensions::SafeFrameTools
       eAspectChange.call(control.value)
     }
     gAspect.add_control(txtAspectRatio)
-    
+
     lblWidth = SKUI::Label.new('Aspect Ratio:', txtAspectRatio)
     lblWidth.position(10, 23)
     lblWidth.width = 85
     lblWidth.align = :right
     gAspect.add_control(lblWidth)
-    
+
     btnResetAspect = SKUI::Button.new('Reset') { |control|
       zero = Locale.float_to_string(0.0)
       @window[:txt_aspect_ratio].value = zero
@@ -108,14 +108,14 @@ module Sketchup::Extensions::SafeFrameTools
     lblAovY.width = 85
     lblAovY.align = :right
     gAspect.add_control(lblAovY)
-    
+
     # Export Viewport Group
     gExport = SKUI::Groupbox.new('Export 2D')
     gExport.position(5, 120)
     gExport.right = 5
     gExport.height = 125
     @window.add_control(gExport)
-    
+
     # Width
     width = @settings[:export_width]
     eWidthChange = DeferredEvent.new { |value| self.width_changed(value) }
@@ -127,11 +127,11 @@ module Sketchup::Extensions::SafeFrameTools
       eWidthChange.call(control.value)
     }
     gExport.add_control(txtWidth)
-    
+
     lblWidth = SKUI::Label.new('Width:', txtWidth)
     lblWidth.position(10, 23)
     gExport.add_control(lblWidth)
-    
+
     # Height
     if self.float_equal(view.camera.aspect_ratio, 0.0)
       ratio = view.vpheight.to_f / view.vpwidth
@@ -149,7 +149,7 @@ module Sketchup::Extensions::SafeFrameTools
       eHeightChange.call(control.value)
     }
     gExport.add_control(txtHeight)
-    
+
     lblHeight = SKUI::Label.new('Height:', txtHeight)
     lblHeight.position(110, 23)
     gExport.add_control(lblHeight)
@@ -157,21 +157,21 @@ module Sketchup::Extensions::SafeFrameTools
     lblUnits = SKUI::Label.new('px')
     lblUnits.position(-10, 23)
     gExport.add_control(lblUnits)
-    
+
     # Transparency
     chkTransp = SKUI::Checkbox.new('Transparency')
     chkTransp.name = :chk_transparency
     chkTransp.position(10, 55)
     chkTransp.checked = @settings[:export_transparency]
     gExport.add_control(chkTransp)
-    
+
     # Anti-aliasing
     chkAA = SKUI::Checkbox.new('Anti-aliasing')
     chkAA.name = :chk_aa
     chkAA.position(10, 80)
     chkAA.checked = @settings[:export_antialias]
     gExport.add_control(chkAA)
-    
+
     # Export
     btnExport = SKUI::Button.new('Export') { |control|
       self.export_safeframe
@@ -179,7 +179,7 @@ module Sketchup::Extensions::SafeFrameTools
     btnExport.position(-7, -8)
     btnExport.size(75, 23)
     gExport.add_control(btnExport)
-    
+
     # Close
     btnClose = SKUI::Button.new('Close') { |control|
       @settings[:export_width]        = @window[:txt_width].value.to_i
@@ -194,7 +194,7 @@ module Sketchup::Extensions::SafeFrameTools
     @window
   end
 
-  
+
   # @since 1.0.0
   def self.width_changed(value)
     #puts "width_changed( #{value} )"
@@ -207,8 +207,8 @@ module Sketchup::Extensions::SafeFrameTools
     @window[:txt_height].value = ( value.to_i * ratio ).to_i
     nil
   end
-  
-  
+
+
   # @since 1.0.0
   def self.height_changed(value)
     #puts "height_changed( #{value} )"
@@ -221,8 +221,8 @@ module Sketchup::Extensions::SafeFrameTools
     @window[:txt_width].value = ( value.to_i * ratio ).to_i
     nil
   end
-  
-  
+
+
   # @since 1.0.0
   def self.aspect_changed(value)
     #puts "aspect_changed( #{value} )"

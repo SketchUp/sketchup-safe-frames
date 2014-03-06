@@ -5,7 +5,7 @@
 # This software is provided as an example of using the Ruby interface
 # to SketchUp.
 #
-# Permission to use, copy, modify, and distribute this software for 
+# Permission to use, copy, modify, and distribute this software for
 # any purpose and without fee is hereby granted, provided that the above
 # copyright notice appear in all copies.
 #
@@ -18,7 +18,7 @@
 require 'su_safeframe.rb'
 
 module Sketchup::Extensions::SafeFrameTools::Locale
-  
+
   # Some locale settings uses the comma as decimal separator. .to_f does not
   # account for this, so all commas must be coverted to periods.
 	#
@@ -32,8 +32,8 @@ module Sketchup::Extensions::SafeFrameTools::Locale
     @decimal_separator ||= self.decimal_separator
     string.tr(@decimal_separator, '.').to_f
   end
- 
-  
+
+
   # Returns a string with the decimal separator in the user's locale and
   # in the precision of the model units.
   #
@@ -50,8 +50,8 @@ module Sketchup::Extensions::SafeFrameTools::Locale
       float.to_s.tr!( '.', @decimal_separator )
     end
   end
-  
-  
+
+
   # Formats the given float to a string with the user's locale decimal delmitor
   # and with the precision given in the model's option for lengths.
   #
@@ -70,8 +70,8 @@ module Sketchup::Extensions::SafeFrameTools::Locale
     num.tr!('.', @decimal_separator)
     num
   end
-  
-  
+
+
   # Casts +string+ to +type+s class.
   #
   # @param [String] string
@@ -85,7 +85,7 @@ module Sketchup::Extensions::SafeFrameTools::Locale
     if string == 'null'
       value = nil
     elsif type.is_a?( Integer )
-      value = string.to_i 
+      value = string.to_i
     elsif type.is_a?( Float ) && !type.is_a?( Length )
       value = self.string_to_float(string)
     elsif type.is_a?( Length )
@@ -99,11 +99,11 @@ module Sketchup::Extensions::SafeFrameTools::Locale
     end
     value
   end
-  
-  
+
+
   # Hack to determine if the user's locale uses comma or periodas decimal
   # separator. Makes the assumption that if it's not period, then is is
-  # comma. Yields incorrect result if the user has some other obscure 
+  # comma. Yields incorrect result if the user has some other obscure
   # separator.
 	#
 	# @return [String]
@@ -115,8 +115,8 @@ module Sketchup::Extensions::SafeFrameTools::Locale
   rescue
     return ','
   end
-  
-  
+
+
   # @note Currently makes the assumption that locales with comma as decimal
   #       uses semi-colon and locales with period as decimal uses comma.
   #
@@ -125,5 +125,5 @@ module Sketchup::Extensions::SafeFrameTools::Locale
   def self.list_separator
     ( self.decimal_separator == '.' ) ? ',' : ';'
   end
-  
+
 end # module Sketchup::Extensions::SafeFrameTools::Locale
