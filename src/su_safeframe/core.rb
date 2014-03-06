@@ -92,8 +92,19 @@ module Sketchup::Extensions::SafeFrameTools
     if Sketchup.version.to_i < 14
       filename = UI.savepanel('Export Camera Safeframe')
     else
-      filetypes = '*.png;*.jpg;*.bmp;*.tif;*.pdf;*.eps;*.epx;*.dwg;*.dxf'
-      filename = UI.savepanel('Export Camera Safeframe', nil, filetypes)
+      filetypes = [
+        'PDF File (*.pdf)|*.pdf',
+        'EPS File (*.eps)|*.eps',
+        'Windows Bitmap (*.bmp)|*.bmp',
+        'JPEG Image (*.jpg)|*.jpg',
+        'Tagged Image File (*.tif)|*.tif',
+        'Portable Network Graphics (*.png)|*.png',
+        'Piranesi EPix (*.epx)|*.epx',
+        'AutoCAD DWG File (*.dwg)|*.dwg',
+        'AutoCAD DXf File (*.dxf)|*.dxf'
+      ]
+      filter = filetypes.join("|")
+      filename = UI.savepanel('Export Camera Safeframe', nil, "#{filter}|")
     end
     return if filename.nil?
     
