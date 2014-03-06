@@ -32,7 +32,7 @@ module Sketchup::Extensions::SafeFrameTools
     options = {
       :title           => PLUGIN_NAME,
       :preferences_key => PLUGIN_ID,
-      :width           => 250,
+      :width           => 255,
       :height          => 290,
       :resizable       => false
     }
@@ -42,7 +42,7 @@ module Sketchup::Extensions::SafeFrameTools
     gAspect = SKUI::Groupbox.new('Viewport')
     gAspect.position(5, 5)
     gAspect.right = 5
-    gAspect.height = 110
+    gAspect.height = 125
     @window.add_control(gAspect)
 
     # Aspect Ratio
@@ -113,7 +113,7 @@ module Sketchup::Extensions::SafeFrameTools
     gExport = SKUI::Groupbox.new('Export 2D')
     gExport.position(5, 120)
     gExport.right = 5
-    gExport.height = 110
+    gExport.height = 125
     @window.add_control(gExport)
     
     # Width
