@@ -1,6 +1,3 @@
-require 'sketchup.rb'
-
-
 # @since 1.0.0
 module SKUI
 
@@ -19,7 +16,7 @@ module SKUI
 
   # Configure Debug mode.
   require File.join( PATH, 'debug.rb' )
-  Debug.enabled = false
+  Debug.enabled = true
 
 
   # Load the availible UI control classes.
