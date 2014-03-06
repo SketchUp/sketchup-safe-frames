@@ -5,7 +5,7 @@
 # This software is provided as an example of using the Ruby interface
 # to SketchUp.
 #
-# Permission to use, copy, modify, and distribute this software for 
+# Permission to use, copy, modify, and distribute this software for
 # any purpose and without fee is hereby granted, provided that the above
 # copyright notice appear in all copies.
 #
@@ -23,9 +23,9 @@ require 'extensions.rb'
 module Sketchup
  module Extensions
   module SafeFrameTools
-  
+
   ### CONSTANTS ### ------------------------------------------------------------
-  
+
   # Plugin information
   PLUGIN_ID       = 'SafeFrameTools'.freeze
   PLUGIN_NAME     = 'Safe Frame Tools'.freeze
@@ -36,10 +36,10 @@ module Sketchup
   PATH_ROOT     = File.dirname(__FILE__).freeze
   PATH          = File.join(PATH_ROOT, FILENAMESPACE).freeze
   PATH_ICONS    = File.join(PATH, 'icons').freeze
-  
-  
+
+
   ### EXTENSION ### ------------------------------------------------------------
-  
+
   unless file_loaded?(__FILE__)
     loader = File.join( PATH, 'core.rb' )
     ex = SketchupExtension.new(PLUGIN_NAME, loader)
@@ -49,7 +49,7 @@ module Sketchup
     ex.creator     = 'SketchUp'
     Sketchup.register_extension(ex, true)
   end
-  
+
   end # module SafeFrameTools
  end # module Extensions
 end # module Sketchup
