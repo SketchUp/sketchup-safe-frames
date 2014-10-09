@@ -18,17 +18,16 @@ Usage
 3. Profit!
 
 Detailed info here....
-```
+
 
 More info section 1
 ----------------------------
 
 Information....
 
-```
+
 
 More info section 2
 ----------------------------
 
-Information....
-```
+Information.... 
