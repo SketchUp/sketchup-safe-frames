@@ -226,7 +226,7 @@ module Sketchup::Extensions::SafeFrameTools
     view_aspect = view.vpwidth.to_f / view.vpheight.to_f
     # Ideally the Ruby API should expose the flag that indicates if camera.fov
     # is vertical or horizontal, but alas.
-    if float_equal(view.camera.aspect_ratio, 0.0)
+    if self.is_fov_vertical?(view.camera)
       y_aov = view.field_of_view
       x_aov = y_aov_to_x_aov(y_aov, view_aspect)
     else
@@ -239,7 +239,7 @@ module Sketchup::Extensions::SafeFrameTools
 
   # @since 1.0.0
   def self.set_aov_x(view, x_aov)
-    if float_equal(view.camera.aspect_ratio, 0.0)
+    if self.is_fov_vertical?(view.camera)
       view_aspect = view.vpwidth.to_f / view.vpheight.to_f
       y_aov = x_aov_to_y_aov(x_aov, view_aspect)
       view.camera.fov = y_aov
@@ -252,13 +252,24 @@ module Sketchup::Extensions::SafeFrameTools
 
   # @since 1.0.0
   def self.set_aov_y(view, y_aov)
-    if float_equal(view.camera.aspect_ratio, 0.0)
+    if self.is_fov_vertical?(view.camera)
       view.camera.fov = y_aov
     else
       x_aov = y_aov_to_x_aov(y_aov, view.camera.aspect_ratio)
       view.camera.fov = x_aov
     end
     nil
+  end
+
+
+  def self.is_fov_vertical?(camera)
+    if camera.respond_to?(:fov_is_height?)
+      # SU2015 and newer.
+      camera.fov_is_height?
+    else
+      # SU2014 and older. Not as reliable.
+      float_equal(view.camera.aspect_ratio, 0.0)
+    end
   end
 
 
