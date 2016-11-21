@@ -1,15 +1,15 @@
 #-------------------------------------------------------------------------------
 #
-# Copyright 2013-2014 Trimble Navigation Ltd.
+# Copyright 2013-2016 Trimble Inc.
 # License: The MIT License (MIT)
 #
 #-------------------------------------------------------------------------------
 
 require 'su_safeframe.rb'
 
-module Sketchup::Extensions::SafeFrameTools
+module Trimble::SketchUp::SafeFrameTools
 
-  # Thin syntax-sugar wrapper to simpify and shorten access to persistent
+  # Thin syntax-sugar wrapper to simplify and shorten access to persistent
   # settings.
   #
   # @since 1.0.0

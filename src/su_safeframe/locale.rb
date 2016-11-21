@@ -1,16 +1,16 @@
 #-------------------------------------------------------------------------------
 #
-# Copyright 2013-2014 Trimble Navigation Ltd.
+# Copyright 2013-2016 Trimble Inc.
 # License: The MIT License (MIT)
 #
 #-------------------------------------------------------------------------------
 
 require 'su_safeframe.rb'
 
-module Sketchup::Extensions::SafeFrameTools::Locale
+module Trimble::SketchUp::SafeFrameTools::Locale
 
   # Some locale settings uses the comma as decimal separator. .to_f does not
-  # account for this, so all commas must be coverted to periods.
+  # account for this, so all commas must be converted to periods.
 	#
 	# @param [String] string
 	#
@@ -116,4 +116,4 @@ module Sketchup::Extensions::SafeFrameTools::Locale
     ( self.decimal_separator == '.' ) ? ',' : ';'
   end
 
-end # module Sketchup::Extensions::SafeFrameTools::Locale
+end # module Trimble::SketchUp::SafeFrameTools::Locale

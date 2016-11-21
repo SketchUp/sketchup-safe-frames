@@ -1,17 +1,7 @@
 #-------------------------------------------------------------------------------
 #
-# Copyright 2013, Trimble Navigation Limited
-#
-# This software is provided as an example of using the Ruby interface
-# to SketchUp.
-#
-# Permission to use, copy, modify, and distribute this software for
-# any purpose and without fee is hereby granted, provided that the above
-# copyright notice appear in all copies.
-#
-# THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR
-# IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
-# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+# Copyright 2013-2016 Trimble Inc.
+# License: The MIT License (MIT)
 #
 #-------------------------------------------------------------------------------
 
@@ -21,7 +11,7 @@ require 'su_safeframe/locale.rb'
 require 'su_safeframe/settings.rb'
 require 'su_safeframe/ui.rb'
 
-module Sketchup::Extensions::SafeFrameTools
+module Trimble::SketchUp::SafeFrameTools
 
   # NOTE to Extension Warehouse moderation:
   # This will load the bundled SKUI library into this module - keeping it
@@ -131,7 +121,7 @@ module Sketchup::Extensions::SafeFrameTools
   def self.reset_camera_aspect_ratio
     view = Sketchup.active_model.active_view
     self.set_aspect_ratio(view, 0.0, FIX_CAMERA_ZOOM)
-    if @window
+    if @window && @window.visible?
       self.width_changed(@window[:txt_width].value)
       @window[:txt_aspect_ratio].value = Locale.float_to_string(0.0)
     end
@@ -298,7 +288,7 @@ module Sketchup::Extensions::SafeFrameTools
 
   ### DEBUG ### ----------------------------------------------------------------
 
-  # Sketchup::Extensions::SafeFrameTools.reload
+  # Trimble::SketchUp::SafeFrameTools.reload
   #
   # @since 1.0.0
   def self.reload

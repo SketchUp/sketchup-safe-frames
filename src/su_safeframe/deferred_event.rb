@@ -1,13 +1,13 @@
 #-------------------------------------------------------------------------------
 #
-# Copyright 2013-2014 Trimble Navigation Ltd.
+# Copyright 2013-2016 Trimble Inc.
 # License: The MIT License (MIT)
 #
 #-------------------------------------------------------------------------------
 
 require 'su_safeframe.rb'
 
-module Sketchup::Extensions::SafeFrameTools
+module Trimble::SketchUp::SafeFrameTools
 
 
   # Class that defer a procs execution by a given delay. If a value is given

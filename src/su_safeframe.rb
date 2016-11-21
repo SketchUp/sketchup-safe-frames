@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 #
-# Copyright 2013-2014 Trimble Navigation Ltd.
+# Copyright 2013-2016 Trimble Inc.
 # License: The MIT License (MIT)
 #
 #-------------------------------------------------------------------------------
@@ -10,8 +10,8 @@ require 'extensions.rb'
 
 #-------------------------------------------------------------------------------
 
-module Sketchup
- module Extensions
+module Trimble
+module SketchUp
   module SafeFrameTools
 
   ### CONSTANTS ### ------------------------------------------------------------
@@ -19,7 +19,7 @@ module Sketchup
   # Plugin information
   PLUGIN_ID       = 'SafeFrameTools'.freeze
   PLUGIN_NAME     = 'Safe Frame Tools'.freeze
-  PLUGIN_VERSION  = '1.0.3'.freeze
+  PLUGIN_VERSION  = '1.0.4'.freeze
 
   # Resource paths
   FILENAMESPACE = File.basename(__FILE__, '.*')
@@ -31,18 +31,18 @@ module Sketchup
   ### EXTENSION ### ------------------------------------------------------------
 
   unless file_loaded?(__FILE__)
-    loader = File.join( PATH, 'core.rb' )
+    loader = File.join(PATH, 'core.rb')
     ex = SketchupExtension.new(PLUGIN_NAME, loader)
     ex.description = 'Manipulate safe frames and export 2D images.'
     ex.version     = PLUGIN_VERSION
-    ex.copyright   = 'Trimble Navigation Limited © 2013-2014'
+    ex.copyright   = 'Trimble Inc. © 2013-2016'
     ex.creator     = 'SketchUp'
     Sketchup.register_extension(ex, true)
   end
 
   end # module SafeFrameTools
- end # module Extensions
-end # module Sketchup
+end # module SketchUp
+end # module Trimble
 
 #-------------------------------------------------------------------------------
 
