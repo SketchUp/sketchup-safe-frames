@@ -79,24 +79,18 @@ module Trimble::SketchUp::SafeFrameTools
   # @since 1.0.0
   def self.export_viewport(width, height, antialias = false, transparent = false)
     title = 'Export 2D Safe Frame'
-    if Sketchup.version.to_i < 14 || RUBY_PLATFORM.include?('darwin')
-      filename = UI.savepanel('Export Camera Safeframe')
-    else
-      filetypes = [
-        'PDF File (*.pdf)|*.pdf',
-        'EPS File (*.eps)|*.eps',
-        'Windows Bitmap (*.bmp)|*.bmp',
-        'JPEG Image (*.jpg)|*.jpg',
-        'Tagged Image File (*.tif)|*.tif',
-        'Portable Network Graphics (*.png)|*.png',
-        'Piranesi EPix (*.epx)|*.epx',
-        'AutoCAD DWG File (*.dwg)|*.dwg',
-        'AutoCAD DXf File (*.dxf)|*.dxf'
-      ]
-      filter = filetypes.join("|")
-      filename = UI.savepanel('Export Camera Safeframe', nil, "#{filter}|")
-    end
+    # Previously this used to display a list of file types, but it was causing
+    # an internal error on Mac. And it wasn't doing anything useful on Windows
+    # either as it doesn't append the filetype to the filename if the user
+    # omitted the file extension. So instead we check that the user provided a
+    # filetype.
+    filename = UI.savepanel('Export Camera Safeframe')
     return if filename.nil?
+
+    if File.extname(filename).empty?
+      UI.messagebox('File type missing. Include the file extension in the filename.')
+      return
+    end
 
     view = Sketchup.active_model.active_view
     options = {
@@ -112,7 +106,7 @@ module Trimble::SketchUp::SafeFrameTools
     if result
       UI.messagebox "Image saved to: #{filename}"
     else
-      UI.messagebox 'Failed to save image.'
+      UI.messagebox 'Failed to save image. Can only export the file types SketchUp itself can export.'
     end
   end
 
