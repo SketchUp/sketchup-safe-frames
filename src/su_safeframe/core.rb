@@ -79,7 +79,7 @@ module Trimble::SketchUp::SafeFrameTools
   # @since 1.0.0
   def self.export_viewport(width, height, antialias = false, transparent = false)
     title = 'Export 2D Safe Frame'
-    if Sketchup.version.to_i < 14
+    if Sketchup.version.to_i < 14 || RUBY_PLATFORM.include?('darwin')
       filename = UI.savepanel('Export Camera Safeframe')
     else
       filetypes = [
