@@ -19,7 +19,7 @@ module SketchUp
   # Plugin information
   PLUGIN_ID       = 'SafeFrameTools'.freeze
   PLUGIN_NAME     = 'Safe Frame Tools'.freeze
-  PLUGIN_VERSION  = '1.0.5'.freeze
+  PLUGIN_VERSION  = '1.0.6'.freeze
 
   # Resource paths
   FILENAMESPACE = File.basename(__FILE__, '.*')
@@ -35,7 +35,7 @@ module SketchUp
     ex = SketchupExtension.new(PLUGIN_NAME, loader)
     ex.description = 'Manipulate safe frames and export 2D images.'
     ex.version     = PLUGIN_VERSION
-    ex.copyright   = 'Trimble Inc. © 2013-2019'
+    ex.copyright   = 'Trimble Inc. © 2013-2021'
     ex.creator     = 'SketchUp'
     Sketchup.register_extension(ex, true)
   end
