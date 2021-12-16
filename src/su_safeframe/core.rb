@@ -31,8 +31,7 @@ module Trimble::SketchUp::SafeFrameTools
     }
     cmd.small_icon = File.join(PATH_ICONS, 'camera_aspect_16.png')
     cmd.large_icon = File.join(PATH_ICONS, 'camera_aspect_24.png')
-    cmd.tooltip = 'Camera Tools'
-    cmd.status_bar_text = 'Camera Tools'
+    cmd.tooltip = 'Set Camera Aspect Ratio'
     cmd_set_camera_aspect_ratio = cmd
 
     cmd = UI::Command.new('Reset Camera Aspect Ratio') {
@@ -41,7 +40,7 @@ module Trimble::SketchUp::SafeFrameTools
     cmd.small_icon = File.join(PATH_ICONS, 'camera_reset_16.png')
     cmd.large_icon = File.join(PATH_ICONS, 'camera_reset_24.png')
     cmd.tooltip = 'Resets the camera aspect ratio'
-    cmd.status_bar_text = 'Resets the camera aspect ratio'
+    cmd.status_bar_text = 'Remove the gray aspect ratio bars.'
     cmd_reset_camera_aspect_ratio = cmd
 
     # Menus
