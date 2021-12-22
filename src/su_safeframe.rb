@@ -19,7 +19,7 @@ module SketchUp
   # Plugin information
   PLUGIN_ID       = 'SafeFrameTools'.freeze
   PLUGIN_NAME     = 'Safe Frame Tools'.freeze
-  PLUGIN_VERSION  = '1.0.6'.freeze
+  PLUGIN_VERSION  = '1.0.7'.freeze
 
   # Resource paths
   FILENAMESPACE = File.basename(__FILE__, '.*')
